@@ -29,7 +29,7 @@ function docker_create_jenkins_container() {
       -d jenkins)
 
       if [ -n "$JENKINS_CONTAINER_ID" ]; then
-        echo "# $OK_PROVISION_CONTAINER"
+        echo "# jenkins container is provisioning and will be ready soon"
         echo ".........................................\n"
         echo "- logs jenkins container:"
         echo "  docker logs $JENKINS_CONTAINER_ID"
