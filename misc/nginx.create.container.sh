@@ -63,7 +63,7 @@ function docker_create_nginx_container() {
       echo "# nginx container is provisioning and will be ready soon"
       echo ""
       echo "# your nginx webserver can be found at:"
-      echo "# http://localhost:$NGINX_CONTAINER_PORT"
+      echo "# http://localhost:$NGINX_HOST_PORT"
       echo ".........................................\n"
       echo "- logs nginx container:"
       echo "  docker logs $NGINX_CONTAINER_ID"
