@@ -46,3 +46,7 @@ function docker_create_jenkins_container() {
     echo "# unable to provision container: $IS_DOCKER_UP_RUNNING"
   fi
 }
+
+
+alias connectme-jenkins-devel="docker exec -it $JENKINS_CONTAINER_NAME bash"
+alias open-jenkins-devel="open http://localhost:$JENKINS_PORT_HOST"
