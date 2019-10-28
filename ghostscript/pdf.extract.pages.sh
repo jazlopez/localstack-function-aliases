@@ -1,6 +1,10 @@
-#!/usr/bin bas
+#!/bin/bash
 
-
+# ----------------------------------------------------------
+# Description: extract pages of PDF document using ghostscript
+# Author: Jaziel Lopez
+# Date: October 2019
+# ----------------------------------------------------------
 
 function pdf_extract_pages() {
 
