@@ -10,6 +10,7 @@ export JENKINS_CONTAINER_PASSWORD="123456"
 export JENKINS_VOLUME_HOST="/opt/jenkins"
 export JENKINS_VOLUME_CONTAINER="/var/jenkins_home/"
 export JENKINS_CONTAINER_NAME="jenkins_devel"
+export JENKINS_CONTAINER_API_TOKEN="11e25dc946f8b77981f8ed90432fdb179e"
 export JENKINS_PORT_HOST="49001"
 export JENKINS_PORT_CONTAINER="8080"
 
@@ -48,5 +49,7 @@ function docker_create_jenkins_container() {
 }
 
 
-alias connectme-jenkins-devel="docker exec -it $JENKINS_CONTAINER_NAME bash"
+
+alias run-cmd-jenkins-devel="java -jar /usr/local/bin/jenkins-cli.jar -s http://localhost:$JENKINS_PORT_HOST/ -auth $JENKINS_CONTAINER_USER:$JENKINS_CONTAINER_API_TOKEN"
+alias connectme-jenkins-devel="docker exec -it -u root $JENKINS_CONTAINER_NAME bash"
 alias open-jenkins-devel="open http://localhost:$JENKINS_PORT_HOST"
