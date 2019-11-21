@@ -7,12 +7,46 @@
 # Date: 2019 Aug
 # Requirement: clone localstack project from github
 #              https://github.com/localstack/localstack
-# Support: OSX as is; for linux do not overwrite TMPDIR; ignore line 19
+# Support:oSX as is; for linux do not overwrite TMPDIR; ignore line 19
+clear
+
+echo "
+odddddddddddddddddddddddddddddddyhdddddddddddddddddddddddddddddd+
+oddy........................................................./ddd+
+odds                 .:///////:.                             -ddd+
+odds               :o/.\`    \`\`./o:                           -ddd+
+odds             \`s/\`           \`/o:::::-\`                   -ddd+
+odds             y:               ..\`\`\`.-++:                 -ddd+
+odds           \`:y            \`...\`       \`:o-...\`           -ddd+
+odds        -/+//-        \`...\`\`  \`...\`     \`/:::/++/.       -ddd+
+odds      :o:.          .-.\`         \`\`--          \`.+o.     -ddd+
+odds     ++\`             \`...\`     \`...\`              .s.    -ddd+
+odds    -s              .-\` \`\`.....\`\` \`--              .y    -ddd+
+odds    o:               \`..\`\`  \`  \`\`..\`                y.   -ddd+
+odds    ++              .-\` \`\`.....\`\` \`--               y.   -ddd+
+odds    \`y.              \`\`..\`\` \` \`\`...\`               /o    -ddd+
+odds     .s:                 \`.....\`\`                \`++\`    -ddd+
+odds      \`/+:-\`\`               \`                \`.-/+-      -ddd+
+odds         .:/+///////////////////////////////+//-.        -ddd+
+odds\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`:ddd+
+oddhyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyhddd+
+
+...................................................................
+            Run localstack in your environment
+...................................................................
+
+See:        https://github.com/localstack/localstack
+Author:     Jaziel Lopez < jaziel.lopez @ thermofisher.com > 
+Date:       2019 
+Repository: https://github.com/jaziel-lopez/localstack-function-aliases.git
+"
+
+echo "[INFO] STEP 1/2: VERIFY LOCALSTACK INSTALLATION"
 
 if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
 
     HERE=$PWD/localstack
-    
+
     if [ ! -d $HERE ]; then
         mkdir $HERE
         echo "[INFO] localstack will be cloned at $HERE ..."
@@ -22,32 +56,30 @@ if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
     fi
 
     if [ $? == 0 ]; then
-        
-        if [[ $SHELL == *"bash"* ]]; then
-            echo "export LOCALSTACK_INSTALLATION_PATH=$HERE" >> $HOME/.bashrc
-            export LOCALSTACK_INSTALLATION_PATH=$HERE
-            echo "[INFO] Written LOCALSTACK_INSTALLATION_PATH to $HOME/.bashrc"
-        fi
-        
+
+        export LOCALSTACK_INSTALLATION_PATH=$HERE
+        WHICH_PROFILE=$HOME/.bashrc
+
         if [[ $SHELL == *"zsh"* ]]; then
-            echo "export LOCALSTACK_INSTALLATION_PATH=$HERE" >> $HOME/.zshrc
-            export LOCALSTACK_INSTALLATION_PATH=$HERE
-            echo "[INFO] Written LOCALSTACK_INSTALLATION_PATH to $HOME/.zshrc"
+            WHICH_PROFILE=$HOME/.zshrc
         fi
+
+        echo "export LOCALSTACK_INSTALLATION_PATH=$HERE" >> $WHICH_PROFILE
+        echo "[INFO] Written LOCALSTACK_INSTALLATION_PATH to $WHICH_PROFILE"
+
     else
         echo "[ERROR] localstack git clone failed with errors"
         exit 1
     fi
 fi
 
-# export LOCALSTACK_INSTALLATION_PATH=;  # enter path where was localstack cloned in
+echo "[INFO] STEP 2/2: LAUNCH LOCALSTACK SERVICES"
 
-echo "=============================================="
-echo "[INFO] starting localstack services...."
 echo "[INFO] stand by..."
+
 cd $LOCALSTACK_INSTALLATION_PATH
 
-echo "[INFO] localstack installation path: $LOCALSTACK_INSTALLATION_PATH"
+echo "[INFO] valueof LOCALSTACK_INSTALLATION_PATH: $LOCALSTACK_INSTALLATION_PATH"
 
 TMPDIR=/private/$TMPDIR
 DOCKER_COMPOSE_UP=$(docker-compose up -d 2>&1)
@@ -58,5 +90,5 @@ if [ $? -ne 0 ]; then
 fi;
 echo "[INFO] $DOCKER_COMPOSE_UP"
 echo "[INFO] good bye..."
-echo "=============================================="
+
 exit 0
