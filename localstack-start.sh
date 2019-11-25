@@ -71,6 +71,8 @@ if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
         echo "[ERROR] localstack git clone failed with errors"
         exit 1
     fi
+  else
+      echo "[INFO] found previous localstack installation"
 fi
 
 echo "[INFO] STEP 2/2: LAUNCH LOCALSTACK SERVICES"
@@ -86,7 +88,7 @@ DOCKER_COMPOSE_UP=$(docker-compose up -d 2>&1)
 
 if [ $? -ne 0 ]; then
     echo "[ERROR] $DOCKER_COMPOSE_UP"
-    exit $?
+    exit 1
 fi;
 echo "[INFO] $DOCKER_COMPOSE_UP"
 echo "[INFO] good bye..."
