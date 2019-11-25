@@ -43,6 +43,17 @@ Repository: https://github.com/jaziel-lopez/localstack-function-aliases.git
 
 echo "[INFO] STEP 1/2: VERIFY LOCALSTACK INSTALLATION"
 
+OPT_INSTALLATION_PATH_VERIFICATION=$1
+
+case $OPT_INSTALLATION_PATH_VERIFICATION in
+  --use-lock-file)
+    LOCALSTACK_USE_LOCK_FILE=1
+    ;;
+  *)
+    LOCALSTACK_USE_LOCK_FILE=0
+    ;;
+esac
+
 if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
 
     HERE=$PWD/localstack
@@ -73,6 +84,14 @@ if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
     fi
   else
       echo "[INFO] found previous localstack installation"
+fi
+
+LOCALSTACK_INSTALLED_LOCK_FILE="$HOME/.localstack.install"
+
+if [ $LOCALSTACK_USE_LOCK_FILE == 1 ]; then
+  touch $LOCALSTACK_INSTALLED_LOCK_FILE
+else
+  rm -f $LOCALSTACK_INSTALLED_LOCK_FILE
 fi
 
 echo "[INFO] STEP 2/2: LAUNCH LOCALSTACK SERVICES"
