@@ -43,17 +43,6 @@ Repository: https://github.com/jaziel-lopez/localstack-function-aliases.git
 
 echo "[INFO] STEP 1/2: VERIFY LOCALSTACK INSTALLATION"
 
-OPT_INSTALLATION_PATH_VERIFICATION=$1
-
-case $OPT_INSTALLATION_PATH_VERIFICATION in
-  --use-lock-file)
-    LOCALSTACK_USE_LOCK_FILE=1
-    ;;
-  *)
-    LOCALSTACK_USE_LOCK_FILE=0
-    ;;
-esac
-
 if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
 
     HERE=$PWD/localstack
@@ -86,14 +75,6 @@ if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
       echo "[INFO] found previous localstack installation"
 fi
 
-LOCALSTACK_INSTALLED_LOCK_FILE="$HOME/.localstack.install"
-
-if [ $LOCALSTACK_USE_LOCK_FILE == 1 ]; then
-  touch $LOCALSTACK_INSTALLED_LOCK_FILE
-else
-  rm -f $LOCALSTACK_INSTALLED_LOCK_FILE
-fi
-
 echo "[INFO] STEP 2/2: LAUNCH LOCALSTACK SERVICES"
 
 echo "[INFO] stand by..."
@@ -103,7 +84,37 @@ cd $LOCALSTACK_INSTALLATION_PATH
 echo "[INFO] valueof LOCALSTACK_INSTALLATION_PATH: $LOCALSTACK_INSTALLATION_PATH"
 
 TMPDIR=/private/$TMPDIR
-DOCKER_COMPOSE_UP=$(docker-compose up -d 2>&1)
+
+# user preference
+DATADIR=$HOME/localstack-data/            # Local directory for saving persistent data 
+                                          # (currently only supported for these services: Kinesis, DynamoDB, Elasticsearch, S3).
+
+PORT_WEB_UI=8888                          # Port for localstack web UI (do not use default 8080)
+START_WEB=1                               # Localstack web UI should start (0/1)
+SERVICES="s3"                             # Services to start, use comma separator,
+                                          # comment line entirely to start all by default
+HOSTNAME="localstack.local"               # Hostname, do not forget to add localstack.local to your hosts file
+DEFAULT_REGION="us-east-1"                # Region, change accordingly if required
+
+# verify path(s) exists
+if [ ! -d $DATADIR ]; then
+  mkdir $DATADIR
+fi
+
+# write .env file on the fly
+echo "export DATA_DIR=$DATADIR" > .env
+echo "export PORT_WEB_UI=$PORT_WEB_UI" >> .env
+echo "export START_WEB=$START_WEB" >> .env
+echo "export SERVICES=$SERVICES" >> .env
+echo "export HOSTNAME=$HOSTNAME" >> .env
+echo "export DEFAULT_REGION=$DEFAULT_REGION" >> .env
+
+
+# source .env file before compose
+DOCKER_COMPOSE_UP=$(source .env && docker-compose up -d 2>&1)
+
+# clean up env
+rm -f .env
 
 if [ $? -ne 0 ]; then
     echo "[ERROR] $DOCKER_COMPOSE_UP"
