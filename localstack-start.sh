@@ -78,11 +78,6 @@ if [[ $DO_INSTALL == 1 ]]; then
   
   if [ $? == 0 ]; then
     
-    WHICH_PROFILE=$HOME/.bashrc
-
-    if [[ $SHELL == *"zsh"* ]]; then
-      WHICH_PROFILE=$HOME/.zshrc
-    fi
     echo "[INFO] localstack successfully checked out"
 
     UPDATE_ENVIRONMENT_VARS=1
@@ -97,7 +92,6 @@ WHICH_PROFILE=$HOME/.bashrc
 if [[ $SHELL == *"zsh"* ]]; then
   WHICH_PROFILE=$HOME/.zshrc
 fi
- 
 
 if [[ $UPDATE_ENVIRONMENT_VARS == 1 ]]; then
   # prevent keep appending
