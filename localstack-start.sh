@@ -42,46 +42,78 @@ Repository: https://github.com/jaziel-lopez/localstack-function-aliases.git
 "
 
 echo "[INFO] STEP 1/2: VERIFY LOCALSTACK INSTALLATION"
+DO_INSTALL=0
+UPDATE_ENVIRONMENT_VARS=0
+
+if [ ! -z $LOCALSTACK_INSTALLATION_PATH ]; then
+  if [ ! -d $LOCALSTACK_INSTALLATION_PATH ]; then
+    echo "[WARN] outdated LOCALSTACK_INSTALLATION_PATH variable found..."
+    echo "[WARN] it refers to a non-existing location..."
+    echo "[INFO] attempting to reinstall localstack..."
+    
+    mkdir $LOCALSTACK_INSTALLATION_PATH
+    DO_INSTALL=1
+  else
+    echo "[INFO] localstack already cloned at $LOCALSTACK_INSTALLATION_PATH"
+  fi
+
+  HERE=$LOCALSTACK_INSTALLATION_PATH
+fi
 
 if [ -z $LOCALSTACK_INSTALLATION_PATH ]; then
+  
+  HERE=$PWD/localstack
 
-    HERE=$PWD/localstack
-
-    if [ ! -d $HERE ]; then
-        mkdir $HERE
-        echo "[INFO] localstack will be cloned at $HERE ..."
-        git clone https://github.com/localstack/localstack $HERE
-    else
-        echo "[INFO] localstack already cloned at $HERE"
-    fi
-
-    if [ $? == 0 ]; then
-
-        export LOCALSTACK_INSTALLATION_PATH=$HERE
-        WHICH_PROFILE=$HOME/.bashrc
-
-        if [[ $SHELL == *"zsh"* ]]; then
-            WHICH_PROFILE=$HOME/.zshrc
-        fi
-
-        echo "export LOCALSTACK_INSTALLATION_PATH=$HERE" >> $WHICH_PROFILE
-        echo "[INFO] Written LOCALSTACK_INSTALLATION_PATH to $WHICH_PROFILE"
-
-    else
-        echo "[ERROR] localstack git clone failed with errors"
-        exit 1
-    fi
-  else
-      echo "[INFO] found previous localstack installation"
+  if [ ! -d $HERE ]; then
+    mkdir $HERE
+    DO_INSTALL=1
+  fi
 fi
+
+if [[ $DO_INSTALL == 1 ]]; then
+  
+  
+  echo "[INFO] localstack will be cloned at $HERE ..."
+  git clone https://github.com/localstack/localstack $HERE
+  
+  if [ $? == 0 ]; then
+    
+    WHICH_PROFILE=$HOME/.bashrc
+
+    if [[ $SHELL == *"zsh"* ]]; then
+      WHICH_PROFILE=$HOME/.zshrc
+    fi
+    echo "[INFO] localstack successfully checked out"
+
+    UPDATE_ENVIRONMENT_VARS=1
+  else
+    echo "[ERROR] localstack git clone failed with errors"
+    exit 1
+  fi
+fi
+
+WHICH_PROFILE=$HOME/.bashrc
+
+if [[ $SHELL == *"zsh"* ]]; then
+  WHICH_PROFILE=$HOME/.zshrc
+fi
+ 
+
+if [[ $UPDATE_ENVIRONMENT_VARS == 1 ]]; then
+  # prevent keep appending
+  # OSX
+  sed -i '' 's/.*LOCALSTACK_INSTALLATION_PATH=.*//' \
+    $WHICH_PROFILE
+  echo "export LOCALSTACK_INSTALLATION_PATH=$HERE" >> $WHICH_PROFILE
+  echo "[INFO] setting LOCALSTACK_INSTALLATION_PATH into $WHICH_PROFILE"
+fi
+# ..... END OF SECTION 1
 
 echo "[INFO] STEP 2/2: LAUNCH LOCALSTACK SERVICES"
 
 echo "[INFO] stand by..."
 
-cd $LOCALSTACK_INSTALLATION_PATH
-
-echo "[INFO] valueof LOCALSTACK_INSTALLATION_PATH: $LOCALSTACK_INSTALLATION_PATH"
+cd $HERE
 
 TMPDIR=/private/$TMPDIR
 
@@ -90,8 +122,8 @@ DATADIR=$HOME/localstack-data/            # Local directory for saving persisten
                                           # (currently only supported for these services: Kinesis, DynamoDB, Elasticsearch, S3).
 
 PORT_WEB_UI=8888                          # Port for localstack web UI (do not use default 8080)
-START_WEB=1                               # Localstack web UI should start (0/1)
-SERVICES="s3"                             # Services to start, use comma separator,
+# START_WEB=1                               # Localstack web UI should start (0/1)
+# SERVICES="s3"                             # Services to start, use comma separator,
                                           # comment line entirely to start all by default
 HOSTNAME="localstack.local"               # Hostname, do not forget to add localstack.local to your hosts file
 DEFAULT_REGION="us-east-1"                # Region, change accordingly if required
@@ -101,14 +133,14 @@ if [ ! -d $DATADIR ]; then
   mkdir $DATADIR
 fi
 
+touch .env
 # write .env file on the fly
-echo "export DATA_DIR=$DATADIR" > .env
+echo "export DATA_DIR=$DATADIR" >> .env
 echo "export PORT_WEB_UI=$PORT_WEB_UI" >> .env
-echo "export START_WEB=$START_WEB" >> .env
-echo "export SERVICES=$SERVICES" >> .env
+# echo "export START_WEB=$START_WEB" >> .env
+# echo "export SERVICES=$SERVICES" >> .env
 echo "export HOSTNAME=$HOSTNAME" >> .env
 echo "export DEFAULT_REGION=$DEFAULT_REGION" >> .env
-
 
 # source .env file before compose
 DOCKER_COMPOSE_UP=$(source .env && docker-compose up -d 2>&1)
