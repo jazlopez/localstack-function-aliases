@@ -1,5 +1,8 @@
 # localstack-function-aliases
 
+## TODO:
+* Update scripts to align to latest localstack endpoint centralization
+
 Personal repository for environment provisioning of AWS cloud stack                                                                         
 ```bash                                 
 
