@@ -1,7 +1,9 @@
 # localstack-function-aliases
 
+
 ## TODO:
 * Update scripts to align to latest localstack endpoint centralization
+**Note:** Starting with version `0.11.0`, all APIs are exposed via a single _edge service_, which is accessible on **http://localhost:4566** by default
 
 Personal repository for environment provisioning of AWS cloud stack                                                                         
 ```bash                                 
