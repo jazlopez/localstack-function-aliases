@@ -1,9 +1,32 @@
 # localstack-function-aliases
 
+### GET STARTED
 
-## TODO:
-* Update scripts to align to latest localstack endpoint centralization
-**Note:** Starting with version `0.11.0`, all APIs are exposed via a single _edge service_, which is accessible on **http://localhost:4566** by default
+> IMPORTANT NOTICE:
+> Aliases in this repository are designed and developed to work with zsh shell and oh-my-zsh. 
+> Please be sure to have installed them in your system. 
+
+* Clone repository
+
+```bash
+  git clone 
+
+```
+
+* Activate aliases
+
+Symlink localstack.function.aliases.zsh in your $ZSH_CUSTOM directory
+
+```bash
+  ln -s $PWD/localstack.function.aliases.zsh $ZSH_CUSTOM/localstack.function.aliases.zsh
+```
+
+* Open a new terminal
+
+Open a new terminal to have localstack aliases enabled in your
+
+
+### ABOUT
 
 Personal repository for environment provisioning of AWS cloud stack                                                                         
 ```bash                                 
